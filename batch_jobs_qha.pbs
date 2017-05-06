@@ -7,8 +7,8 @@
 #################################################
 
 #PBS -l select=72:ncpus=24:mpiprocs=24:mem=120Gb
-#PBS -l walltime=24:00:00
-#PBS -N 11QHA_24x72
+#PBS -l walltime=48:00:00
+#PBS -N 2QHA_FREN_70
 
 export PBS_O_WORKDIR=$(readlink -f $PBS_O_WORKDIR)
 cd $PBS_O_WORKDIR
@@ -18,11 +18,11 @@ module load intel-suite mpi
 module load vasp/5.4.1
 
 #Define calculation folders
-dir="/scratch/tmellan/11QHA_24x72"
+dir="/scratch/tmellan/2QHA_FREN_70"
 folders="qha_4.575a qha_4.600a qha_4.625a qha_4.658285a qha_4.685a qha_4.730a qha_4.759a qha_4.801a qha_4.850a qha_4.875a qha_4.900a"
-subFolders="disp-000 disp-001 disp-002 disp-003 disp-004 disp-005 disp-006 disp-007 disp-008 disp-009 disp-010 disp-011 disp-012 disp-013 disp-014"
+subFolders=`echo disp-*`
 
-#Job1 - 165 jobs, this script will run two batches of 72 jobs, at one job per node. 144 jobs done in total. Treat remaining 23 separately
+#Job1 - ~500 jobs, this script will run  batches of 72 jobs, at one job per node (24 cores).
 echo Job1 at date `date`
 
 #Define counter parameter and cores per job
@@ -45,9 +45,12 @@ for i in $folders; do
     let c=c+1
     m=$( echo $((($c % 72 +1))))
 
-#Grab 24 line blocks of the pbs_nodefile and output to node.$counter 
+#Grab 16 line blocks of the pbs_nodefile and output to node.$counter 
     sed -n ''$(($block*$m-$(($block-1))))','$(($block*$m))'p' $PBS_NODEFILE_ORIGINAL > node.$m
     export PBS_NODEFILE=node.$m
+
+#Turn off memory mapping
+    export MPI_MEMMAP_OFF=1
 
 #Call vasp, with 24 cores, in background
     mpiexec_mpt -n $block vasp_std 2>&1 &
@@ -73,4 +76,5 @@ done
 
 #Final wait and export node file, to allow last round of jobs that don't satisfy the modulo statement to finish
 wait
+export MPI_MEMMAP_OFF=0
 export PBS_NODEFILE=$PBS_NODEFILE_ORIGINAL
