@@ -1,0 +1,28 @@
+#!/bin/sh
+#PBS -l walltime=24:00:00
+#PBS -l select=1:ncpus=12:mpiprocs=12:mem=12Gb
+#PBS -N xxNAMExx
+
+module load intel-suite/2016.3
+module load mpi/mpt-2.14
+module load vasp/5.4.1-wannier
+module load wannier90/2.1.0
+
+cd /scratch/tmellan/boltzWann/3clean/xxDIRxx
+#cd /scratch/tmellan/boltzWann/2clean_wannier/19_fresh
+mpiexec_mpt -n 12  vasp_std  
+wait ; tail -n 20 OUTCAR > outreport ; tail -n 20 OSZICAR >> outreport 
+
+mpiexec_mpt -n 12 wannier90.x wannier90
+wait ; tail -n 20 wannier90.wout >> outreport
+
+
+#Make sure the catted stuff all gets back to wannier90 before things move on
+sleep 10 ; touch .
+cat cond_stuff wannier90.win > tmp ; mv tmp wannier90.win
+sleep 10 ; touch .
+
+mpiexec_mpt -n 12 postw90.x wannier90
+wait ; tail -n 20 wannier90.wpout >> outreport
+
+echo done! at `date` >> outreport

@@ -1,0 +1,10 @@
+boltzwann = TRUE
+boltz_calc_also_dos = TRUE
+boltz_mu_min=-0.0001
+boltz_mu_max=0.00001
+boltz_mu_step=0.0001
+boltz_temp_max=4000
+boltz_temp_min=20
+boltz_temp_step=20
+boltz_tdf_energy_step=0.01
+boltz_kmesh= 15 15 15

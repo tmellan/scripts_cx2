@@ -1,0 +1,55 @@
+#Density matrix 
+#LDAU = .TRUE.
+#LDAUL = 2     1   
+#LDAUU = 0.0   0.0 
+##LDAUJ = 0.0   0.0   0.0
+#LDAUTYPE = 2
+#LDAUPRINT = 2
+
+#Projections and DOS
+#NEDOS = 5000
+##NGXF = 120
+##NGYF = 120
+##NGZF = 120
+##EMIN = -7
+##EMAX = 1
+#LORBIT=11
+
+#Paralellisation
+#NPAR=16
+#KPAR=12
+
+#SCF
+ENCUT  =    700
+ISMEAR =  -5
+#SIGMA  =  0.2
+EDIFF  =    1E-7
+#NELM=80
+#NELMDL=5
+#IALGO=38
+
+NEDOS=5000
+
+#important!!
+NBANDS=16
+#ICHARG=11
+
+#EDIFFG = -1E-3
+#NSW=666
+#IBRION=1
+#ISIF=3 # NO CELL CHANGE, IONS RELAXED ONLY
+
+ISYM   =      2
+ADDGRID=    TRUE
+PREC   =    Accurate
+LREAL =     .FALSE.
+
+#OUTPUT
+#LAECHG = .FALSE.
+LWAVE  = .TRUE.
+#LCHARG = .FALSE.
+#LELF = .TRUE.
+
+#LWANNIER
+LWANNIER90=.TRUE.
+LWRITE_MMN_AMN=.TRUE.
